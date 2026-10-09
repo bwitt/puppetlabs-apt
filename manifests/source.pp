@@ -30,7 +30,7 @@
 #   }
 #
 # @param source_format
-#   The file format to use for the apt source. See https://wiki.debian.org/SourcesList
+#   The file format to use for the apt source. Defaults to `apt::source_format`. See https://wiki.debian.org/SourcesList
 #
 # @param location
 #   Required, unless ensure is set to 'absent'. Specifies an Apt repository. Valid options: a string containing a repository URL.
@@ -101,7 +101,7 @@
 #   Specifies whether to check if the package release date is valid.
 #
 define apt::source (
-  Enum['list', 'sources'] $source_format = 'list',
+  Optional[Enum['list', 'sources']] $source_format = undef,
   Array[Enum['deb','deb-src'], 1, 2] $types = ['deb'],
   Optional[Variant[String[1], Array[String[1]]]] $location = undef,
   String[1] $comment = $name,
@@ -121,11 +121,13 @@ define apt::source (
 ) {
   include apt
 
+  $_source_format = pick($source_format, $apt::source_format)
+
   $_before = Apt::Setting["list-${title}"]
 
-  case $source_format {
+  case $_source_format {
     'list': {
-      $_file_suffix = $source_format
+      $_file_suffix = $_source_format
 
       if !$release {
         if fact('os.distro.codename') {
@@ -278,7 +280,7 @@ define apt::source (
       }
     }
     'sources': {
-      $_file_suffix = $source_format
+      $_file_suffix = $_source_format
 
       if $pin {
         warning("'pin' parameter is not supported with deb822 format.")
@@ -363,7 +365,7 @@ define apt::source (
       }
     }
     default: {
-      fail("Unexpected APT source format: ${source_format}")
+      fail("Unexpected APT source format: ${_source_format}")
     }
   }
   apt::setting { "${_file_suffix}-${name}":

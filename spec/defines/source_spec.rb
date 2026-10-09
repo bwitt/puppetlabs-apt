@@ -630,4 +630,22 @@ describe 'apt::source' do
       it { is_expected.to contain_apt__setting("sources-#{title}").with_ensure('absent') }
     end
   end
+
+  describe 'with apt::source_format set to sources' do
+    let(:pre_condition) { 'class { "apt": source_format => "sources" }' }
+
+    context 'without source_format' do
+      let(:params) { { location: ['http://debian.mirror.iweb.ca/debian/'], repos: ['main'] } }
+
+      it { is_expected.to contain_apt__setting("sources-#{title}").with_content(%r{^URIs: http://debian.mirror.iweb.ca/debian/$}) }
+      it { is_expected.not_to contain_apt__setting("list-#{title}") }
+    end
+
+    context 'with source_format list' do
+      let(:params) { { source_format: 'list', location: 'http://debian.mirror.iweb.ca/debian/' } }
+
+      it { is_expected.to contain_apt__setting("list-#{title}").with_content(%r{^deb http://debian.mirror.iweb.ca/debian/ stretch main$}) }
+      it { is_expected.not_to contain_apt__setting("sources-#{title}") }
+    end
+  end
 end

@@ -90,6 +90,9 @@
 # @param sources
 #   Hash of `apt::source` resources.
 #
+# @param source_format
+#   The default file format for `apt::source` resources. See https://wiki.debian.org/SourcesList
+#
 # @param auths
 #   Creates new `apt::auth` resources. Valid options: a hash to be passed to the create_resources function linked above.
 #
@@ -196,6 +199,7 @@ class apt (
   Hash $purge = {},
   Apt::Proxy $proxy = {},
   Hash $sources = {},
+  Enum['list', 'sources'] $source_format = 'list',
   Hash $auths = {},
   Hash $keys = {},
   Hash $keyrings = {},

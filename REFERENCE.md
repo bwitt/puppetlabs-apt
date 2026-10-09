@@ -73,6 +73,7 @@ The following parameters are available in the `apt` class:
 * [`proxy`](#-apt--proxy)
 * [`proxy_defaults`](#-apt--proxy_defaults)
 * [`sources`](#-apt--sources)
+* [`source_format`](#-apt--source_format)
 * [`auths`](#-apt--auths)
 * [`keys`](#-apt--keys)
 * [`keyrings`](#-apt--keyrings)
@@ -269,6 +270,14 @@ Data type: `Hash`
 Hash of `apt::source` resources.
 
 Default value: `{}`
+
+##### <a name="-apt--source_format"></a>`source_format`
+
+Data type: `Enum['list', 'sources']`
+
+The default file format for `apt::source` resources. See https://wiki.debian.org/SourcesList
+
+Default value: `'list'`
 
 ##### <a name="-apt--auths"></a>`auths`
 
@@ -1194,11 +1203,11 @@ The following parameters are available in the `apt::source` defined type:
 
 ##### <a name="-apt--source--source_format"></a>`source_format`
 
-Data type: `Enum['list', 'sources']`
+Data type: `Optional[Enum['list', 'sources']]`
 
-The file format to use for the apt source. See https://wiki.debian.org/SourcesList
+The file format to use for the apt source. Defaults to `apt::source_format`. See https://wiki.debian.org/SourcesList
 
-Default value: `'list'`
+Default value: `undef`
 
 ##### <a name="-apt--source--location"></a>`location`
 
