@@ -629,5 +629,23 @@ describe 'apt::source' do
 
       it { is_expected.to contain_apt__setting("sources-#{title}").with_ensure('absent') }
     end
+
+    context 'absent deb822 source with keyring' do
+      let :params do
+        super().merge(
+          {
+            ensure: 'absent',
+            location: ['http://debrepo.example.com'],
+            keyring: '/usr/share/keyrings/example.asc',
+            architecture: ['amd64'],
+            release: ['example'],
+            repos: ['main'],
+            types: ['deb']
+          },
+        )
+      end
+
+      it { is_expected.to contain_apt__setting("sources-#{title}").with_ensure('absent') }
+    end
   end
 end
